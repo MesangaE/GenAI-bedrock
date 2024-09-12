@@ -1,11 +1,12 @@
 # GenAI-bedrock
-this is a simple Generative AI project in which I have used Amazon Bedrock's foundational model Llama3 70b to generate a 200 word blog on a blog_topic, by getting a lambda function to get trigger by a Post request using API gateway and the generated 200 words get stored in an S3 bucket this readmes gives a run down on how i went about it.
+this is a simple Generative AI project in which I have used Amazon Bedrock's foundational model Llama3 70b to generate a 200-word blog on a blog_topic, by getting a lambda function to get triggered by a Post request using API gateway and the generated 200 words get stored in an S3 bucket this readmes gives a run down on how i went about it.
 
+![Untitled Diagram](https://github.com/user-attachments/assets/09e2966b-f52b-460e-adf9-5ea65a31613e)
 
-1. Create a virtual Environment for python
+1. Create a virtual environment for python
 	Why use a venv
-	 -  Essentially there are modules that others have written and we do not want to rewrite those, which of course is time consuming. 
-          - Also you want to avoid conflict between package versions and it keeps your python environment clean    and organised
+	 -  Essentially there are modules that others have written and we do not want to rewrite those, which of course is time-consuming. 
+          - Also you want to avoid conflict between package versions and it keeps your python environment clean    and organized
           - Isolation is important for safe testing and development, making possible for one work on tons of projects with different requirements affecting one another or your system's global Python installation.
 
 	
