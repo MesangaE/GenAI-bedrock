@@ -1,16 +1,17 @@
 # GenAI-bedrock
-this is a simple Generative AI project in which I have used Amazon Bedrock's foundational model Llama3 70b to generate a 200-word blog on a blog_topic, by getting a lambda function to get triggered by a Post request using API gateway and the generated 200 words get stored in an S3 bucket this readmes gives a run down on how i went about it.
+this is a simple Generative AI project in which I have used Amazon Bedrock's foundational model Llama3 70b to generate a 200-word blog on a blog_topic, by getting a lambda function to get triggered by a Post request on Postman using API gateway and the generated 200 words get stored in an S3 bucket this readmes gives a run down on this project.
 
 ![Untitled Diagram](https://github.com/user-attachments/assets/09e2966b-f52b-460e-adf9-5ea65a31613e)
 
 1. Create a virtual environment for python
+   
 	Why use a venv
 	 -  Essentially there are modules that others have written and we do not want to rewrite those, which of course is time-consuming. 
-          - Also you want to avoid conflict between package versions and it keeps your python environment clean    and organized
+          - Also you want to avoid conflict between package versions and it keeps your python environment clean and organized
           - Isolation is important for safe testing and development, making possible for one work on tons of projects with different requirements affecting one another or your system's global Python installation.
 
 	
-	There are a couple of ways to get this done and inion, anaconda would give you optimal management for your virtual environment that you create and you can have different virtual environments created which need different versions of python and not only the one you have downloaded in your system
+	There are a couple of ways to get this done, anaconda would give you optimal management for your virtual environment that you create and you can have different virtual environments created, that need different versions of python and not only the one you have downloaded in your system.
 	3 ways are;
 	     a. Python -m venv <name>
 	      then activate from the activate file in the scripts directory. This method gives you     dependencies for the specific python version that you have installed.
@@ -18,21 +19,10 @@ this is a simple Generative AI project in which I have used Amazon Bedrock's fou
 	     virtual env -p python3 <name>
 	     activate
 	      virtual_env\Scripts\activate (you can actually use the relative path)
-	     c. Install anaconda which is my favourite because it has a proper     management of environments that you create. When working with a project that has different python dependencies that require different versions of python, in order to avoid breaking things 
+	     c. Install anaconda which is my favourite because it has a proper management of environments that you create. When working with a project that has different python dependencies that require different versions of python, in order to avoid breaking things 
 	Note: When you download Anaconda it will give you issues you would need to set the path correctly if not you would encounter errors or you reinstall and specify the path in environment variables. It will be in the users directory 
 	C:\users\anaconda3  add in the path, the copied path and add Scripts C:\users\anaconda3\Scripts 
 	
-	
-	
-	
-	n my humble opi
-	
-
-
-
-
-How to Fix the "Conda Command Not Recognized" Issue on Windows 10 | pythontwist.com
-
 
 Create a venv 
 Conda create -p <name > python==3.12
@@ -40,6 +30,49 @@ Conda activate <venv path>
 Pip install -
 
 Amazon Bedrock
-Go to Amazon bedrock and cross check if the model you want to use is available in that region. For this project i went for Llama3-70b. Rem that there are important values that you must pass in the lamdba code from the llama model you have chosen. But first you  get model access at the bottom left of the screen
+
+In the Amazon Bedrock console, verify if the model you want to use is available in that region. For this project i went for Llama3-70b. Rem that there are important values that you must pass in the lamdba code from the llama model you have chosen. But first you  get model access at the bottom left of the screen. Once you are happy with the model you want to use copy the code snippet and add it to your lambda code
 
 ![image](https://github.com/user-attachments/assets/0d282ef1-9e53-4125-93a4-b019480b1311)
+
+Create Lambda function
+I worked on this lambda code using vs code but you can use any IDE of your choice, to ensure that your handler is defined properly. Deploy your code and test it. Since Lamba by default comes with an old boto version and bedrock foundation models use the recent boto3 with new packages I downloaded boto3 in a separate file and added this as a layer to my function. adding runtimes of 3.12, 3.11, 3.10 for python. If the zipped file is larger than 10MB it is unlikely to load you may want to upload it in an S3 bucket and then add the path to the object key before creating the layer that you will be attaching to your function.
+
+ SOMETHING TO KEEP IN MIND: I didn't realize that the object key can accommodate special characters but it can be an issue with some protocols. I faced some difficulties here. But documentation came in handy. Once I updated the name of the zipped file uploaded in the bucket the layer was seamlessly created.
+
+ ![image](https://github.com/user-attachments/assets/00958e79-d490-4e5e-b21f-8fd52ed8236d)
+ ![image](https://github.com/user-attachments/assets/3b34673e-1faf-4aa9-b4ae-8d602f5a9a1c)
+
+
+
+Rem to add permissions for my lambda role besides the basic permission in order for it to call various services in the project.
+![image](https://github.com/user-attachments/assets/c591505e-bf5e-4af2-a269-ab5f77ed0175)
+
+Create an S3 bucket
+S3 is a very familiar service. And we know it is a highly available, durable storage that is secure, scalable, and affordable for its high performance...It has tons of uses, one of which is for generative AI projects. Essentially the 200 word write up (blog post) which will be generated by this lambda function using bedrock will get stored in the s3 bucket as specified in the code. (Rem bucket names must be unique!!). In this project, I have used the same bucket for storage of the zip files and the generated blog post.
+
+![image](https://github.com/user-attachments/assets/0a0dd6ab-e120-4d5d-bad5-3aecf56ddfc5)
+
+Create an API gateway
+Create an HTTP API and add routes (POST:blog-generation) and create. when the post route is selected there are 2 options. In this project, I used the "attach integration" to the lambda function and deployed it. This API can be deployed to different environments, especially when you have a bigger project in which you have to deploy to multiple environments like Dev QA, Production, etc. To achieve this go to stages and, create a stage, name it whatever you like for this project. Once created an invoke URL is generated. Ensure that it is deployed. This is what we will be using for our post request, not forgetting to append the route details to the URL
+https://yk64xm4bna.execute-api.us-east-1.amazonaws.com/dev/blog-generation
+
+![image](https://github.com/user-attachments/assets/82c94bf8-81a0-414c-be79-1b4a703579a1)
+
+POSTMAN
+On Postman GUI, choose a post request. Ensure that when posting the URL there are spaces that can give you an error. Post the URL. Click on Body and then Raw and paste the snippet below
+ 
+{
+"blog_topic": "Machine Learning and Generative AI"
+}
+
+And click on send
+![image](https://github.com/user-attachments/assets/4d76d54c-b519-40f6-a5db-db32dcc7b1bd)
+
+you should get your blog post generated which you will find in your S3 bucket. In case of any errors you can check the logs in your cloud formation log group. In my case I kept getting a 500 internal error
+
+
+
+
+
+
