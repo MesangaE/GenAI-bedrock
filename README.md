@@ -3,7 +3,7 @@ this is a simple Generative AI project in which I have used Amazon Bedrock's fou
 
 ![Untitled Diagram](https://github.com/user-attachments/assets/09e2966b-f52b-460e-adf9-5ea65a31613e)
 
-1. Create a virtual environment for python
+1. Create a virtual environment for python to work on my the lambda functions code
    
 	Why use a venv
 	 -  Essentially there are modules that others have written and we do not want to rewrite those, which of course is time-consuming. 
@@ -75,7 +75,7 @@ And click on send
 ![image](https://github.com/user-attachments/assets/f1cb97cf-049b-4c62-9ea1-071addd5d601)
 
 
-you should get your blog post generated which you will find in your S3 bucket. In case of any errors you can check the logs in your cloud formation log group. In my case I kept getting a 500 internal error
+you should get your blog post generated which you will find in your S3 bucket. In case of any errors, you can check the logs in your cloud formation log group. I hit API a couple of times as you can see the screenshot and I t getting a 500 internal error
 
 
 
